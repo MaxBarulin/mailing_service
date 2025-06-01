@@ -71,6 +71,7 @@ class Mailing(models.Model):
             ("Создана", "Создана"),
             ("Запущена", "Запущена"),
             ("Завершена", "Завершена"),
+            ("Отключена", "Отключена"),
         ],
     )
     message = models.ForeignKey(
@@ -133,3 +134,4 @@ class MailingAttempt(models.Model):
         verbose_name = "Попытка рассылки"
         verbose_name_plural = "Попытки рассылки"
         ordering = ["datetime_attempt", "status", "mail_response", "mailing"]
+        
