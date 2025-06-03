@@ -16,15 +16,11 @@ class MailingForm(ModelForm):
         )
 
     def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
+        user = kwargs.pop("user", None)
         super(MailingForm, self).__init__(*args, **kwargs)
 
-        self.fields["message"].widget.attrs.update(
-            {"class": "form-select", "placeholder": "Выберите сообщение"}
-        )
-        self.fields["user_mail"].widget.attrs.update(
-            {"class": "form-select", "placeholder": "Выберите получателей"}
-        )
+        self.fields["message"].widget.attrs.update({"class": "form-select", "placeholder": "Выберите сообщение"})
+        self.fields["user_mail"].widget.attrs.update({"class": "form-select", "placeholder": "Выберите получателей"})
         if user:
             self.fields["message"].queryset = Message.objects.filter(owner=user)
             self.fields["user_mail"].queryset = UserMail.objects.filter(owner=user)
@@ -40,12 +36,8 @@ class UserMailForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(UserMailForm, self).__init__(*args, **kwargs)
 
-        self.fields["email"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Введите email получателя"}
-        )
-        self.fields["fullname"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Введите ФИО получателя"}
-        )
+        self.fields["email"].widget.attrs.update({"class": "form-control", "placeholder": "Введите email получателя"})
+        self.fields["fullname"].widget.attrs.update({"class": "form-control", "placeholder": "Введите ФИО получателя"})
         self.fields["comment"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Дополнительная информация"}
         )
@@ -75,9 +67,7 @@ class UserMailForm(ModelForm):
                     f'Нельзя использовать слово "{word.title()}" в почтовом адресе.',
                 )
             if word in fullname.lower():
-                self.add_error(
-                    "fullname", f'Нельзя использовать слово "{word.title()}" в ФИО.'
-                )
+                self.add_error("fullname", f'Нельзя использовать слово "{word.title()}" в ФИО.')
             if word in comment.lower():
                 self.add_error(
                     "comment",
@@ -95,12 +85,8 @@ class MessageForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(MessageForm, self).__init__(*args, **kwargs)
 
-        self.fields["head_letter"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Введите тему письма"}
-        )
-        self.fields["body_letter"].widget.attrs.update(
-            {"class": "form-control", "placeholder": "Напишите письмо"}
-        )
+        self.fields["head_letter"].widget.attrs.update({"class": "form-control", "placeholder": "Введите тему письма"})
+        self.fields["body_letter"].widget.attrs.update({"class": "form-control", "placeholder": "Напишите письмо"})
 
     def clean(self):
         """Валидация данных сообщения (не должны иметь запрещенные слова)"""

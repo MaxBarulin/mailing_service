@@ -1,16 +1,12 @@
-import os
 import smtplib
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import PermissionDenied
-from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
-from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
-from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
-                                  UpdateView)
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 from dotenv import load_dotenv
 
 from mailing_service.forms import MailingForm, MessageForm, UserMailForm
@@ -36,9 +32,9 @@ class MailingView(ListView):
         context["mailing_all_started"] = Mailing.objects.filter(status="Запущена")
 
         if self.request.user.is_authenticated:
-            context['user_usermail'] = UserMail.objects.filter(owner=self.request.user)
-            context['user_mailing_started'] = Mailing.objects.filter(owner=self.request.user, status='Запущена')
-            context['user_mailing'] = Mailing.objects.filter(owner=self.request.user)
+            context["user_usermail"] = UserMail.objects.filter(owner=self.request.user)
+            context["user_mailing_started"] = Mailing.objects.filter(owner=self.request.user, status="Запущена")
+            context["user_mailing"] = Mailing.objects.filter(owner=self.request.user)
 
         return context
 
@@ -49,6 +45,7 @@ class MailingView(ListView):
 
 class MailingStopSendView(LoginRequiredMixin, DetailView):
     """Класс отключения рассылок администратором"""
+
     model = Mailing
     template_name = "mailing_service/mailing_stop.html"
     context_object_name = "mailing_stop"
@@ -73,7 +70,7 @@ class MailingSendView(LoginRequiredMixin, DetailView):
             try:
                 send_mailing(self)  # Функция в разделе сервисы, отправляет сообщения по рассылке
             except smtplib.SMTPException as error:
-                MailingAttempt.objects.create(mailing=self.object, mail_response=error, status='Не успешно')
+                MailingAttempt.objects.create(mailing=self.object, mail_response=error, status="Не успешно")
         return self.object
 
 
@@ -98,7 +95,7 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     def get_form_kwargs(self):
         # Передаем текущего пользователя в форму
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
 
 
@@ -113,7 +110,7 @@ class MailingListView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.has_perm('mailing_service.can_view_mailing'):
+        if user.has_perm("mailing_service.can_view_mailing"):
             return Mailing.objects.all()
         return Mailing.objects.filter(owner=user)
 
@@ -155,7 +152,7 @@ class MailingUpdateView(LoginRequiredMixin, UpdateView):
     def get_form_kwargs(self):
         # Передаем текущего пользователя в форму
         kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
+        kwargs["user"] = self.request.user
         return kwargs
 
 
@@ -175,7 +172,7 @@ class MailingDeleteView(LoginRequiredMixin, DeleteView):
         raise PermissionDenied
 
 
-@method_decorator(cache_page(60), name='dispatch')
+@method_decorator(cache_page(60), name="dispatch")
 class UserMailDetailView(LoginRequiredMixin, ListView):
     """Класс представления детально получателя рассылки"""
 
@@ -186,7 +183,7 @@ class UserMailDetailView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.has_perm('mailing_service.can_view_user_mail'):
+        if user.has_perm("mailing_service.can_view_user_mail"):
             return UserMail.objects.all()
         return UserMail.objects.filter(owner=user)
 
@@ -255,7 +252,7 @@ class UserMailDeleteView(LoginRequiredMixin, DeleteView):
         raise PermissionDenied
 
 
-@method_decorator(cache_page(60), name='dispatch')
+@method_decorator(cache_page(60), name="dispatch")
 class MessageDetailView(LoginRequiredMixin, ListView):
     """Класс представления писем"""
 
@@ -266,7 +263,7 @@ class MessageDetailView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.has_perm('mailing_service.can_view_message'):
+        if user.has_perm("mailing_service.can_view_message"):
             return Message.objects.all()
         return Message.objects.filter(owner=user)
 
@@ -328,7 +325,7 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
         raise PermissionDenied
 
 
-@method_decorator(cache_page(60), name='dispatch')
+@method_decorator(cache_page(60), name="dispatch")
 class MailingAttemptView(LoginRequiredMixin, ListView):
     """Класс представления Всех рассылок на главной странице"""
 
@@ -356,7 +353,7 @@ class UserRegisterView(LoginRequiredMixin, ListView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.has_perm('users.can_ban_user'):
+        if user.has_perm("users.can_ban_user"):
             return CustomUser.objects.all()
         return PermissionDenied
 
@@ -372,7 +369,7 @@ class UserBanView(LoginRequiredMixin, DeleteView):
     def get_queryset(self):
         user = self.request.user
 
-        if user.has_perm('users.can_ban_user'):
+        if user.has_perm("users.can_ban_user"):
             return CustomUser.objects.all()
         return PermissionDenied
 

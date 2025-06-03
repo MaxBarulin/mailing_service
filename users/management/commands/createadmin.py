@@ -11,12 +11,12 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         User = get_user_model()
         user = User.objects.create(
-            email='admin@mail.ru',
+            email="admin@mail.ru",
             first_name="admin",
             last_name="admin",
         )
 
-        user.set_password(os.getenv('PASSWORD'))
+        user.set_password(os.getenv("PASSWORD"))
 
         user.is_staff = True
         user.is_superuser = True
